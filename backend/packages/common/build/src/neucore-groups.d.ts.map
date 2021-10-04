@@ -1,0 +1,1 @@
+{"version":3,"file":"neucore-groups.d.ts","sourceRoot":"","sources":["../../src/neucore-groups.ts"],"names":[],"mappings":"AAAA,uBAAuB;AACvB,MAAM,WAAW,YAAY;IAC3B,EAAE,EAAE,MAAM,CAAA;IACV,IAAI,EAAE,MAAM,CAAA;IACZ,WAAW,CAAC,EAAE,MAAM,GAAG,IAAI,CAAA;IAC3B,UAAU,EAAE,QAAQ,GAAG,SAAS,CAAA;IAChC,UAAU,EAAE,OAAO,CAAA;CACpB"}

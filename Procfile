@@ -1,0 +1,1 @@
+web: node -r ./backend/.pnp.cjs backend/packages/backend/build/src/index.js
