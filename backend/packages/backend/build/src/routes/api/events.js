@@ -77,6 +77,11 @@ function getRouter(options) {
         }
         ctx.status = 204;
     });
+    router.get('/solarSystems', user_roles_1.userRoles.requireOneOf(user_roles_1.UserRoles.EVENTS_WRITE), async (ctx) => {
+        const solarSystems = await options.events.getSolarSystems();
+        const response = { solarSystems };
+        ctx.body = response;
+    });
     return router;
 }
 exports.getRouter = getRouter;

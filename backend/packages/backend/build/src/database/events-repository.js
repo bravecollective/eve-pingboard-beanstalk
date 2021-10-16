@@ -5,6 +5,15 @@ class EventsRepository {
     constructor(knex) {
         this.knex = knex;
     }
+    async getSolarSystems() {
+        const systems = await this.knex('systems')
+            .select('name', 'constellation', 'region');
+        return systems.map(s => ({
+            name: s.name,
+            constellation: s.constellation,
+            region: s.region,
+        }));
+    }
     async getEvents(options) {
         let query = this.knex('events')
             .select('*')

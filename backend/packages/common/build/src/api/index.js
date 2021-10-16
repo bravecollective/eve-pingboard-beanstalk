@@ -16,4 +16,5 @@ __exportStar(require("./ping-template"), exports);
 __exportStar(require("./ping-view-permissions"), exports);
 __exportStar(require("./ping"), exports);
 __exportStar(require("./slack-channels"), exports);
+__exportStar(require("./solar-systems"), exports);
 //# sourceMappingURL=index.js.map
