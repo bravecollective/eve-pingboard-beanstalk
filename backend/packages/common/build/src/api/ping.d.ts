@@ -9,6 +9,7 @@ export interface ApiPing {
     text: string;
     slackChannelName: string;
     slackChannelId: string;
+    slackMessageId?: string | null;
     scheduledTitle?: string;
     scheduledFor?: string;
     author: string;

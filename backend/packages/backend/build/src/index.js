@@ -26,9 +26,13 @@ async function main() {
     const knex = await database_1.knexInstance();
     const events = new database_1.EventsRepository(knex);
     const pings = new database_1.PingsRepository(knex);
+    if (process.env.GROUPS_WRITE_EVENTS) {
+        console.warn('Using GROUPS_WRITE_EVENTS is deprecated, use GROUPS_EDIT_EVENTS instead');
+    }
     const groupsByRole = [
         [common_1.UserRoles.EVENTS_READ, process.env.GROUPS_READ_EVENTS],
-        [common_1.UserRoles.EVENTS_WRITE, process.env.GROUPS_WRITE_EVENTS],
+        [common_1.UserRoles.EVENTS_ADD, process.env.GROUPS_ADD_EVENTS],
+        [common_1.UserRoles.EVENTS_EDIT, process.env.GROUPS_EDIT_EVENTS || process.env.GROUPS_WRITE_EVENTS],
         [common_1.UserRoles.PING, process.env.GROUPS_PING],
         [common_1.UserRoles.PING_TEMPLATES_WRITE, process.env.GROUPS_WRITE_PING_TEMPLATES],
     ];

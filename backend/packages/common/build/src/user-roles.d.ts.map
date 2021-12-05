@@ -1,1 +1,1 @@
-{"version":3,"file":"user-roles.d.ts","sourceRoot":"","sources":["../../src/user-roles.ts"],"names":[],"mappings":"AAAA,oBAAY,SAAS;IACnB,WAAW,gBAAgB;IAC3B,YAAY,iBAAiB;IAC7B,IAAI,SAAS;IACb,oBAAoB,yBAAyB;CAC9C"}
+{"version":3,"file":"user-roles.d.ts","sourceRoot":"","sources":["../../src/user-roles.ts"],"names":[],"mappings":"AAAA,oBAAY,SAAS;IACnB,WAAW,gBAAgB;IAC3B,UAAU,eAAe;IACzB,WAAW,gBAAgB;IAC3B,IAAI,SAAS;IACb,oBAAoB,yBAAyB;CAC9C"}

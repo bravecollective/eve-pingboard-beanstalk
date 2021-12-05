@@ -16,8 +16,16 @@ Deploys https://github.com/cmd-johnson/eve-pingboard/releases
     CORE_APP_ID="1"
     CORE_APP_TOKEN="1a1a1a"
     GROUPS_READ_EVENTS="member"
-    GROUPS_WRITE_EVENTS="admin"
+    GROUPS_ADD_EVENTS="fc"
+    GROUPS_EDIT_EVENTS="admin"
     GROUPS_PING="member"
     GROUPS_WRITE_PING_TEMPLATES="admin"
     ```
 - Add security group for database access.
+- redeploy
+- run migrations:
+    ```
+    sudo su webapp
+    cd /var/app/current/backend/packages/backend/build/
+    DB_URL="mysql://user:pass@127.0.0.1/pingboard" yarn run knex migrate:latest
+    ```

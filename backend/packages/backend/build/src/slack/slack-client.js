@@ -72,6 +72,16 @@ class SlackClient {
             channel: channelId,
             text,
         });
+        if (!response.ok || !response.message?.ts) {
+            throw new SlackRequestFailedError(response.error);
+        }
+        return response.message.ts;
+    }
+    async deleteMessage(channelId, messageId) {
+        const response = await this.client.chat.delete({
+            channel: channelId,
+            ts: messageId,
+        });
         if (!response.ok) {
             throw new SlackRequestFailedError(response.error);
         }

@@ -48,7 +48,7 @@ class PingsRepository {
             return {
                 pings: pings.map(rawToPing),
                 remaining: count.length > 0 && typeof count[0].count === 'number'
-                    ? pings.length - count[0].count
+                    ? count[0].count - pings.length
                     : 0,
             };
         });
@@ -93,13 +93,6 @@ class PingsRepository {
                 slack_channel_name: options.template.slackChannelName,
                 text: options.text,
             }))[0];
-            const storedPing = (await trx('pings')
-                .select('pings.*', 'scheduled_pings.scheduled_for', 'scheduled_pings.title')
-                .leftJoin('scheduled_pings', 'pings.id', 'scheduled_pings.ping_id')
-                .where({ id: pingId }))[0];
-            if (!storedPing) {
-                throw new PingCreationFailedError();
-            }
             if (options.template.allowScheduling && options.scheduledFor && options.scheduledTitle) {
                 const date = new Date(options.scheduledFor);
                 await trx('scheduled_pings').insert({
@@ -108,10 +101,14 @@ class PingsRepository {
                     scheduled_for: date,
                 });
             }
-            const apiPing = rawToPing(storedPing);
-            if (options.runInTransaction) {
-                await options.runInTransaction(apiPing);
+            const storedPing = (await trx('pings')
+                .select('pings.*', 'scheduled_pings.scheduled_for', 'scheduled_pings.title')
+                .leftJoin('scheduled_pings', 'pings.id', 'scheduled_pings.ping_id')
+                .where({ id: pingId }))[0];
+            if (!storedPing) {
+                throw new PingCreationFailedError();
             }
+            const apiPing = rawToPing(storedPing);
             return apiPing;
         });
     }
