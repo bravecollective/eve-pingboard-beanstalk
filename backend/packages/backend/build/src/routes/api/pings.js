@@ -84,7 +84,7 @@ function getRouter(options) {
                 formattedText,
                 '\n\n',
                 `> ${dayjs_1.dayjs(pingDate).format('YYYY-MM-DD HH:mm:ss')} `,
-                `- *${characterName}* to #${template.slackChannelId}`,
+                `- *${characterName}* to #${template.slackChannelName}`,
             ].join('');
             const slackMessageId = await options.slackClient.postMessage(template.slackChannelId, wrappedText);
             try {
