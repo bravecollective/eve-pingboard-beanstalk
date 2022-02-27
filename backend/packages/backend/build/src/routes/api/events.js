@@ -47,13 +47,13 @@ function getRouter(options) {
         };
         ctx.body = response;
     });
-    router.post('/', user_roles_1.userRoles.requireOneOf(user_roles_1.UserRoles.EVENTS_EDIT, user_roles_1.UserRoles.EVENTS_ADD), async (ctx) => {
+    router.post('/', user_roles_1.userRoles.requireOneFreshOf(user_roles_1.UserRoles.EVENTS_EDIT, user_roles_1.UserRoles.EVENTS_ADD), async (ctx) => {
         const event = await validateEventInput(ctx.request.body);
         const response = await options.events.addEvent(event, ctx.session?.character?.name ?? '');
         ctx.body = response;
         ctx.status = 201;
     });
-    router.put('/:eventId', user_roles_1.userRoles.requireOneOf(user_roles_1.UserRoles.EVENTS_EDIT), async (ctx) => {
+    router.put('/:eventId', user_roles_1.userRoles.requireOneFreshOf(user_roles_1.UserRoles.EVENTS_EDIT), async (ctx) => {
         const eventId = parseInt(ctx.params['eventId']);
         if (!Number.isFinite(eventId) || eventId < 0) {
             throw new http_errors_1.BadRequest();
@@ -66,7 +66,7 @@ function getRouter(options) {
         }
         ctx.body = response;
     });
-    router.delete('/:eventId', user_roles_1.userRoles.requireOneOf(user_roles_1.UserRoles.EVENTS_EDIT), async (ctx) => {
+    router.delete('/:eventId', user_roles_1.userRoles.requireOneFreshOf(user_roles_1.UserRoles.EVENTS_EDIT), async (ctx) => {
         const eventId = parseInt(ctx.params['eventId']);
         if (!Number.isFinite(eventId) || eventId < 0) {
             throw new http_errors_1.BadRequest();

@@ -7,6 +7,7 @@ const eve_sso_client_1 = require("./sso/eve-sso-client");
 const in_memory_session_provider_1 = require("./util/in-memory-session-provider");
 const common_1 = require("@ping-board/common");
 const slack_client_1 = require("./slack/slack-client");
+const neucore_group_cache_1 = require("./neucore/neucore-group-cache");
 async function main() {
     const eveSsoClient = new eve_sso_client_1.EveSSOClient({
         clientId: getFromEnv('SSO_CLIENT_ID'),
@@ -19,7 +20,13 @@ async function main() {
         appId: getFromEnv('CORE_APP_ID'),
         appToken: getFromEnv('CORE_APP_TOKEN'),
     });
+    const neucoreGroupsProvider = new neucore_group_cache_1.NeucoreGroupCache({
+        neucoreClient,
+        cacheTTL: getNumberFromEnv('CORE_GROUP_REFRESH_INTERVAL', 60) * 1000,
+    });
     const slackClient = new slack_client_1.SlackClient(getFromEnv('SLACK_TOKEN'));
+    const sessionTimeout = getNumberFromEnv('SESSION_TIMEOUT', 7 * 24 * 60 * 60) * 1000;
+    const sessionRefreshInterval = getNumberFromEnv('SESSION_REFRESH_INTERVAL', 60) * 1000;
     const sessionProvider = new in_memory_session_provider_1.InMemorySessionProvider();
     sessionProvider.startAutoCleanup();
     const cookieSigningKeys = process.env.COOKIE_KEY?.split(' ');
@@ -41,8 +48,11 @@ async function main() {
     const app = app_1.getApp({
         eveSsoClient,
         neucoreClient,
+        neucoreGroupsProvider,
         slackClient,
         sessionProvider,
+        sessionTimeout,
+        sessionRefreshInterval,
         cookieSigningKeys,
         events,
         pings,
@@ -65,6 +75,20 @@ function getFromEnv(key) {
         throw new Error(`Missing env variable: ${key}`);
     }
     return value;
+}
+function getNumberFromEnv(key, fallback) {
+    const value = process.env[key];
+    if (typeof value !== 'string') {
+        if (typeof fallback === 'number') {
+            return fallback;
+        }
+        throw new Error(`Missing env variable: ${key}`);
+    }
+    const asNumber = Number(value);
+    if (!Number.isFinite(asNumber)) {
+        throw new Error(`Env variable is not a number: ${key}`);
+    }
+    return asNumber;
 }
 main().catch(error => {
     console.error(error);

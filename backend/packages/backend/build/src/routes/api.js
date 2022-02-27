@@ -9,14 +9,14 @@ const events_1 = require("./api/events");
 const pings_1 = require("./api/pings");
 function getRouter(options) {
     const router = new router_1.default();
-    router.get('/me', ctx => {
+    router.get('/me', async (ctx) => {
         const response = ctx.session?.character
             ? {
                 isLoggedIn: true,
                 character: {
                     id: ctx.session.character.id,
                     name: ctx.session.character.name,
-                    roles: ctx.getRoles(),
+                    roles: await ctx.getRoles(),
                 },
             }
             : { isLoggedIn: false };

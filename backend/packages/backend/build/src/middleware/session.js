@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getSessionMiddleware = void 0;
-function getSessionMiddleware({ app, sessionCookieName, sessionProvider, }) {
+function getSessionMiddleware({ app, sessionCookieName, sessionProvider, sessionTimeout, sessionRefreshInterval, }) {
     const isSigned = Array.isArray(app.keys) && app.keys.length > 0;
     if (!isSigned) {
         if (process.env.NODE_ENV !== 'development') {
@@ -11,6 +11,13 @@ function getSessionMiddleware({ app, sessionCookieName, sessionProvider, }) {
             console.warn('app.keys is not set, session cookies will not be signed!');
         }
     }
+    const getCookieOptions = () => ({
+        httpOnly: true,
+        signed: isSigned,
+        overwrite: true,
+        sameSite: 'lax',
+        expires: new Date(Date.now() + sessionTimeout),
+    });
     return async (ctx, next) => {
         // Alias the context to work around the readonly restrictions of the regular context
         const sessionCtx = ctx;
@@ -19,19 +26,12 @@ function getSessionMiddleware({ app, sessionCookieName, sessionProvider, }) {
             if (sessionId) {
                 await sessionProvider.deleteSession(sessionId);
             }
-            const sessionTimeout = 1000 * 60 * 60;
-            const expiresAt = new Date(Date.now() + sessionTimeout);
+            const cookieOptions = getCookieOptions();
             const newSession = await sessionProvider.createSession({
-                expiresAt,
+                expiresAt: cookieOptions.expires,
                 ...content,
             });
-            ctx.cookies.set(sessionCookieName, newSession.id, {
-                httpOnly: true,
-                signed: isSigned,
-                overwrite: true,
-                sameSite: 'lax',
-                expires: expiresAt,
-            });
+            ctx.cookies.set(sessionCookieName, newSession.id, cookieOptions);
             sessionCtx.session = newSession;
             return newSession;
         };
@@ -44,7 +44,25 @@ function getSessionMiddleware({ app, sessionCookieName, sessionProvider, }) {
         };
         const sessionId = ctx.cookies.get(sessionCookieName, { signed: isSigned });
         if (sessionId) {
-            sessionCtx.session = await sessionProvider.getSession(sessionId) ?? null;
+            const session = await sessionProvider.getSession(sessionId) ?? null;
+            sessionCtx.session = session;
+            if (session) {
+                const sessionAge = Date.now() + sessionTimeout - session.expiresAt.getTime();
+                const shouldRefresh = sessionRefreshInterval >= 0 &&
+                    sessionAge >= sessionRefreshInterval;
+                if (shouldRefresh) {
+                    const cookieOptions = getCookieOptions();
+                    await sessionProvider.updateSession({
+                        ...session,
+                        expiresAt: cookieOptions.expires,
+                    });
+                    ctx.cookies.set(sessionCookieName, sessionId, cookieOptions);
+                }
+            }
+            else {
+                // The session wasn't found in the database, so there's no point in keeping the cookie
+                ctx.cookies.set(sessionCookieName, null);
+            }
         }
         return next();
     };

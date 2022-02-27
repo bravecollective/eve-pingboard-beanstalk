@@ -8,12 +8,17 @@ class InMemoryTTLCache {
         this._get = options.get;
         this.maxEntries = options.maxEntries ?? null;
     }
-    async get(key) {
-        const cached = this.cache.get(key);
-        if (cached) {
-            const { expires, value } = await cached;
-            if (expires > Date.now()) {
-                return value;
+    async get(key, forceRefresh = false) {
+        if (forceRefresh) {
+            this.cache.delete(key);
+        }
+        else {
+            const cached = this.cache.get(key);
+            if (cached) {
+                const { expires, value } = await cached;
+                if (expires > Date.now()) {
+                    return value;
+                }
             }
         }
         const newValue = (async () => {

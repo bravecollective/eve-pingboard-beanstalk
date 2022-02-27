@@ -21,6 +21,8 @@ function getApp(options) {
         app,
         sessionCookieName: 'pingboard-session',
         sessionProvider: options.sessionProvider,
+        sessionTimeout: options.sessionTimeout,
+        sessionRefreshInterval: options.sessionRefreshInterval,
     }));
     app.use(user_roles_1.getUserRolesMiddleware(options));
     app.use(koa_bodyparser_1.default({ enableTypes: ['json'] }));

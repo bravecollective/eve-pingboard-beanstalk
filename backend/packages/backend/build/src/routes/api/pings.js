@@ -41,13 +41,13 @@ function getRouter(options) {
         const before = typeof beforeParam === 'string' ? new Date(beforeParam) : undefined;
         const pings = await options.pings.getPings({
             characterName: ctx.session.character.name,
-            neucoreGroups: ctx.session.character.neucoreGroups.map(g => g.name),
+            neucoreGroups: await ctx.getNeucoreGroups(),
             before,
         });
         const response = { ...pings };
         ctx.body = response;
     });
-    router.post('/', user_roles_1.userRoles.requireOneOf(user_roles_1.UserRoles.PING), async (ctx) => {
+    router.post('/', user_roles_1.userRoles.requireOneFreshOf(user_roles_1.UserRoles.PING), async (ctx) => {
         if (!ctx.session?.character) {
             throw new http_errors_1.Unauthorized();
         }
@@ -59,8 +59,9 @@ function getRouter(options) {
         if (!!ping.scheduledFor !== !!ping.scheduledTitle) {
             throw new http_errors_1.BadRequest('either specify both a calendar time and title or neither of both');
         }
+        const groups = await ctx.getNeucoreGroups();
         if (template.allowedNeucoreGroups.length > 0 &&
-            !template.allowedNeucoreGroups.some(g => ctx.session?.character?.neucoreGroups.some(({ name }) => g === name))) {
+            !template.allowedNeucoreGroups.some(g => groups.includes(g))) {
             throw new http_errors_1.Forbidden('you are not permitted to ping using this template');
         }
         const placeholders = [
@@ -74,7 +75,7 @@ function getRouter(options) {
                     return slack_client_1.slackLink(`https://time.nakamura-labs.com/#${time.unix()}`, `${time.format('YYYY-MM-DD HH:mm')} (${time.fromNow()})`);
                 } },
         ];
-        const formattedText = placeholders.reduce((text, { placeholder, value }) => text.replace(new RegExp(`{{${placeholder}}}`), () => typeof value === 'function' ? value() : value), ping.text);
+        const formattedText = placeholders.reduce((text, { placeholder, value }) => text.replace(new RegExp(`{{${placeholder}}}`, 'igm'), () => typeof value === 'function' ? value() : value), ping.text);
         try {
             const characterName = ctx.session.character.name;
             const pingDate = new Date();
@@ -125,7 +126,7 @@ function getRouter(options) {
         });
         const response = await options.pings.getScheduledEvents({
             characterName: ctx.session.character.name,
-            neucoreGroups: ctx.session.character.neucoreGroups.map(g => g.name),
+            neucoreGroups: await ctx.getNeucoreGroups(),
             before,
             after,
             count,
@@ -150,13 +151,13 @@ function getRouter(options) {
     });
     router.get('/templates', user_roles_1.userRoles.requireOneOf(user_roles_1.UserRoles.PING), async (ctx) => {
         const templates = await options.pings.getPingTemplates();
-        const canSeeAllTemplates = ctx.hasRoles(user_roles_1.UserRoles.PING_TEMPLATES_WRITE);
+        const canSeeAllTemplates = await ctx.hasRoles(user_roles_1.UserRoles.PING_TEMPLATES_WRITE);
         let response;
         if (canSeeAllTemplates) {
             response = { templates };
         }
         else {
-            const neucoreGroups = ctx.session?.character?.neucoreGroups?.map(g => g.name) ?? [];
+            const neucoreGroups = await ctx.getNeucoreGroups();
             response = {
                 templates: templates.filter(t => t.allowedNeucoreGroups.length === 0 ||
                     t.allowedNeucoreGroups.some(g => neucoreGroups.includes(g))),
@@ -164,7 +165,7 @@ function getRouter(options) {
         }
         ctx.body = response;
     });
-    router.post('/templates', user_roles_1.userRoles.requireOneOf(user_roles_1.UserRoles.PING_TEMPLATES_WRITE), async (ctx) => {
+    router.post('/templates', user_roles_1.userRoles.requireOneFreshOf(user_roles_1.UserRoles.PING_TEMPLATES_WRITE), async (ctx) => {
         const template = await validateTemplateInput(ctx.request.body);
         const channelName = await options.slackClient.getChannelName(template.slackChannelId);
         const createdTemplate = await options.pings.addPingTemplate({
@@ -176,7 +177,7 @@ function getRouter(options) {
         });
         ctx.body = createdTemplate;
     });
-    router.put('/templates/:templateId', user_roles_1.userRoles.requireOneOf(user_roles_1.UserRoles.PING_TEMPLATES_WRITE), async (ctx) => {
+    router.put('/templates/:templateId', user_roles_1.userRoles.requireOneFreshOf(user_roles_1.UserRoles.PING_TEMPLATES_WRITE), async (ctx) => {
         const templateId = parseInt(ctx.params['templateId'] ?? '', 10);
         if (!isFinite(templateId)) {
             throw new http_errors_1.BadRequest(`invalid templateId: ${ctx.params['templateId']}`);
@@ -201,7 +202,7 @@ function getRouter(options) {
             throw e;
         }
     });
-    router.delete('/templates/:templateId', user_roles_1.userRoles.requireOneOf(user_roles_1.UserRoles.PING_TEMPLATES_WRITE), async (ctx) => {
+    router.delete('/templates/:templateId', user_roles_1.userRoles.requireOneFreshOf(user_roles_1.UserRoles.PING_TEMPLATES_WRITE), async (ctx) => {
         const templateId = parseInt(ctx.params['templateId'] ?? '', 10);
         if (!isFinite(templateId)) {
             throw new http_errors_1.BadRequest(`invalid templateId: ${ctx.params['templateId']}`);
@@ -225,7 +226,7 @@ function getRouter(options) {
         const response = buildApiPingViewPermissionsResponse(viewPermissions, slackChannels);
         ctx.body = response;
     });
-    router.put('/view-permissions/groups/:group', user_roles_1.userRoles.requireOneOf(user_roles_1.UserRoles.PING_TEMPLATES_WRITE), async (ctx) => {
+    router.put('/view-permissions/groups/:group', user_roles_1.userRoles.requireOneFreshOf(user_roles_1.UserRoles.PING_TEMPLATES_WRITE), async (ctx) => {
         const neucoreGroup = ctx.params['group'];
         if (!neucoreGroup) {
             throw new http_errors_1.BadRequest('invalid neucore group');
@@ -248,7 +249,7 @@ function getRouter(options) {
         const response = buildApiPingViewPermissionsResponse(viewPermissions, slackChannels);
         ctx.body = response;
     });
-    router.put('/view-permissions/channels/:channelId', user_roles_1.userRoles.requireOneOf(user_roles_1.UserRoles.PING_TEMPLATES_WRITE), async (ctx) => {
+    router.put('/view-permissions/channels/:channelId', user_roles_1.userRoles.requireOneFreshOf(user_roles_1.UserRoles.PING_TEMPLATES_WRITE), async (ctx) => {
         const channelId = ctx.params['channelId'];
         if (!channelId) {
             throw new http_errors_1.BadRequest('invalid slack channel id');
