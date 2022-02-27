@@ -20,6 +20,9 @@ Deploys https://github.com/cmd-johnson/eve-pingboard/releases
     GROUPS_EDIT_EVENTS="admin"
     GROUPS_PING="member"
     GROUPS_WRITE_PING_TEMPLATES="admin"
+    SESSION_REFRESH_INTERVAL=60
+    SESSION_TIMEOUT=604800
+    CORE_GROUP_REFRESH_INTERVAL=60
     ```
 - Add security group for database access.
 - redeploy
