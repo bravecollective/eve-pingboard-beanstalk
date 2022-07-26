@@ -13,15 +13,20 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var _NeucoreGroupCache_cache;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NeucoreGroupCache = void 0;
+const cockatiel_1 = require("cockatiel");
 const in_memory_ttl_cache_1 = require("../util/in-memory-ttl-cache");
 class NeucoreGroupCache {
     constructor(options) {
         _NeucoreGroupCache_cache.set(this, void 0);
+        const policy = cockatiel_1.retry(cockatiel_1.handleAll, {
+            backoff: new cockatiel_1.ExponentialBackoff(),
+            maxAttempts: 5,
+        });
         __classPrivateFieldSet(this, _NeucoreGroupCache_cache, new in_memory_ttl_cache_1.InMemoryTTLCache({
             defaultTTL: options.cacheTTL,
             get: async (characterId) => {
                 console.log('getting neucore groups for', characterId);
-                const groups = await options.neucoreClient.getCharacterGroups(characterId);
+                const groups = await policy.execute(() => options.neucoreClient.getCharacterGroups(characterId));
                 return { value: groups.map(g => g.name) };
             },
         }), "f");

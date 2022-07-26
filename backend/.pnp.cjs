@@ -87,6 +87,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@ping-board/common", "workspace:packages/common"],
             ["@slack/web-api", "npm:6.6.0"],
             ["client-oauth2", "npm:4.3.3"],
+            ["cockatiel", "npm:3.0.0-beta.1"],
             ["dayjs", "npm:1.10.7"],
             ["http-errors", "npm:1.8.1"],
             ["jsonwebtoken", "npm:8.5.1"],
@@ -328,6 +329,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["qs", "npm:6.10.1"],
             ["raw-body", "npm:2.4.1"],
             ["type-is", "npm:1.6.18"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["cockatiel", [
+        ["npm:3.0.0-beta.1", {
+          "packageLocation": "./.yarn/cache/cockatiel-npm-3.0.0-beta.1-65f4ff8199-9cc8571cd4.zip/node_modules/cockatiel/",
+          "packageDependencies": [
+            ["cockatiel", "npm:3.0.0-beta.1"]
           ],
           "linkType": "HARD",
         }]

@@ -19,8 +19,8 @@ exports.NeucoreError = NeucoreError;
  * Thrown when the request to Neucore returned a non-success status code (≥ 400).
  */
 class NeucoreResponseError extends NeucoreError {
-    constructor(message, response, underlyingError) {
-        super(message, underlyingError);
+    constructor(message, path, response, underlyingError) {
+        super(message + ` (while fetching ${path})`, underlyingError);
         this.response = response;
     }
 }
@@ -50,10 +50,10 @@ class NeucoreClient {
                 return (await response.json());
             }
             catch (error) {
-                throw new NeucoreResponseError('Failed to parse response', response, error);
+                throw new NeucoreResponseError('Failed to parse response', path, response, error);
             }
         }
-        throw new NeucoreResponseError(`Received unexpected status code: ${response.status}`, response);
+        throw new NeucoreResponseError(`Received unexpected status code: ${response.status}`, path, response);
     }
     /**
      * Queries the character's user's groups from Neucore.

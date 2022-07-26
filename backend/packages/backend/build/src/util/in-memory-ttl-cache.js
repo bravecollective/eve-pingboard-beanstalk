@@ -27,7 +27,11 @@ class InMemoryTTLCache {
                 expires: Date.now() + (ttl ?? this.defaultTTL ?? 0),
                 value,
             };
-        })();
+        })().catch((error) => {
+            // Errors really shouldn't be cached, so we can retry failed requests later
+            this.cache.delete(key);
+            throw error;
+        });
         this.cache.set(key, newValue);
         if (typeof this.maxEntries === 'number' && this.cache.size > Math.max(0, this.maxEntries)) {
             const oldKeys = [...this.cache.keys()].slice(0, this.cache.size - Math.max(this.maxEntries));
