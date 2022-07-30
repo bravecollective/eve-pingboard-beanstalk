@@ -1,12 +1,12 @@
 
 Deploys https://github.com/cmd-johnson/eve-pingboard/releases
 
-- eb init
-  - choose Node.js 14
-- eb create --single -i t3a.nano
-- eb deploy
+- `eb init`
+  - choose Node.js 16
+- `eb create --single -i t3a.nano`
 - Add env vars:
     ```
+    COOKIE_KEY=some-random-string
     DB_URL="mysql://user:pass@127.0.0.1/pingboard"
     SSO_CLIENT_ID="111"
     SSO_CLIENT_SECRET="aaa"
@@ -25,7 +25,7 @@ Deploys https://github.com/cmd-johnson/eve-pingboard/releases
     CORE_GROUP_REFRESH_INTERVAL=60
     ```
 - Add security group for database access.
-- redeploy
+- `eb deploy`
 - run migrations:
     ```
     sudo su webapp
