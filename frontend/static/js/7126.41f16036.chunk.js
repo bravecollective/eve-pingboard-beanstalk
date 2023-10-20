@@ -1,0 +1,2 @@
+(self.webpackChunk_ping_board_frontend=self.webpackChunk_ping_board_frontend||[]).push([[7126],{7126:function(e){e.exports=function(){"use strict";return{name:"en",weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_"),ordinal:function(e){var n=["th","st","nd","rd"],r=e%100;return"["+e+(n[(r-20)%10]||n[r]||n[0])+"]"}}}()}}]);
+//# sourceMappingURL=7126.41f16036.chunk.js.map

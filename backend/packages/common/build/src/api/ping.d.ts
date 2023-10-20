@@ -19,7 +19,7 @@ export interface ApiPingsResponse {
     pings: ApiPing[];
     remaining: number;
 }
-export declare type ApiScheduledPing = Omit<ApiPing, 'scheduledTitle' | 'scheduledFor'> & Required<Pick<ApiPing, 'scheduledTitle' | 'scheduledFor'>>;
+export type ApiScheduledPing = Omit<ApiPing, 'scheduledTitle' | 'scheduledFor'> & Required<Pick<ApiPing, 'scheduledTitle' | 'scheduledFor'>>;
 export declare function isScheduledPing(ping: ApiPing): ping is ApiScheduledPing;
 export interface ApiScheduledPingsResponse {
     pings: ApiScheduledPing[];

@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -31,12 +35,12 @@ const extract_query_param_1 = require("../../util/extract-query-param");
 function getRouter(options) {
     const router = new router_1.default();
     router.get('/', user_roles_1.userRoles.requireOneOf(user_roles_1.UserRoles.EVENTS_READ), async (ctx) => {
-        const count = extract_query_param_1.extractQueryParam(ctx, 'count', v => {
+        const count = (0, extract_query_param_1.extractQueryParam)(ctx, 'count', v => {
             const n = parseInt(v, 10);
             return Number.isFinite(n) && n > 0 ? Math.ceil(n) : null;
         });
-        const before = extract_query_param_1.extractDateQueryParam(ctx, 'before');
-        const after = extract_query_param_1.extractDateQueryParam(ctx, 'after');
+        const before = (0, extract_query_param_1.extractDateQueryParam)(ctx, 'before');
+        const after = (0, extract_query_param_1.extractDateQueryParam)(ctx, 'after');
         const [events, eventCount] = await Promise.all([
             options.events.getEvents({ before, after, count }),
             options.events.getNumberOfEvents({ before, after }),

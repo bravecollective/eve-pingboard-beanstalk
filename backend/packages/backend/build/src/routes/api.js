@@ -22,9 +22,9 @@ function getRouter(options) {
             : { isLoggedIn: false };
         ctx.body = response;
     });
-    const eventsRouter = events_1.getRouter(options);
+    const eventsRouter = (0, events_1.getRouter)(options);
     router.use('/events', eventsRouter.routes(), eventsRouter.allowedMethods());
-    const pingsRouter = pings_1.getRouter(options);
+    const pingsRouter = (0, pings_1.getRouter)(options);
     router.use('/pings', pingsRouter.routes(), pingsRouter.allowedMethods());
     return router;
 }

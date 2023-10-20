@@ -30,7 +30,7 @@ async function main() {
     const sessionProvider = new in_memory_session_provider_1.InMemorySessionProvider();
     sessionProvider.startAutoCleanup();
     const cookieSigningKeys = process.env.COOKIE_KEY?.split(' ');
-    const knex = await database_1.knexInstance();
+    const knex = await (0, database_1.knexInstance)();
     const events = new database_1.EventsRepository(knex);
     const pings = new database_1.PingsRepository(knex);
     if (process.env.GROUPS_WRITE_EVENTS) {
@@ -45,7 +45,7 @@ async function main() {
     ];
     const neucoreToUserRolesMapping = groupsByRole.reduce((byGroup, [role, groups]) => (groups ?? '').split(' ')
         .reduce((byGroup, group) => byGroup.set(group, [...byGroup.get(group) ?? [], role]), byGroup), new Map());
-    const app = app_1.getApp({
+    const app = (0, app_1.getApp)({
         eveSsoClient,
         neucoreClient,
         neucoreGroupsProvider,

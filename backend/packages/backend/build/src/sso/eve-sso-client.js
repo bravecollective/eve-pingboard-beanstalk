@@ -1,30 +1,11 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EveSSOClient = void 0;
 const client_oauth2_1 = __importDefault(require("client-oauth2"));
-const uuid = __importStar(require("uuid"));
+const node_crypto_1 = __importDefault(require("node:crypto"));
 const eve_jwt_1 = require("./eve-jwt");
 const http_errors_1 = require("http-errors");
 const create_interval_scheduler_1 = require("../util/create-interval-scheduler");
@@ -44,7 +25,7 @@ class EveSSOClient {
             authorizationUri: 'https://login.eveonline.com/v2/oauth/authorize/',
         });
         this.stateTimeout = options.stateTimeout ?? 300;
-        this.cleanupScheduler = create_interval_scheduler_1.createIntervalScheduler(() => this.cleanupStates());
+        this.cleanupScheduler = (0, create_interval_scheduler_1.createIntervalScheduler)(() => this.cleanupStates());
     }
     /**
      * Starts regularly checking for and removing expired login states.
@@ -74,7 +55,7 @@ class EveSSOClient {
      * @param sessionId the sessionId to associate the login with
      */
     async getLoginUrl(sessionId) {
-        const state = uuid.v4();
+        const state = node_crypto_1.default.randomUUID();
         const redirectUri = await this.client.code.getUri({ state });
         this.loginStates.set(state, {
             sessionId,
@@ -107,7 +88,7 @@ class EveSSOClient {
         }
         // Obtain the actual access token from EVE SSO
         const tokens = await this.client.code.getToken(href);
-        const accessToken = eve_jwt_1.parseEveJWT(tokens.accessToken, this.clientId);
+        const accessToken = (0, eve_jwt_1.parseEveJWT)(tokens.accessToken, this.clientId);
         return accessToken;
     }
 }

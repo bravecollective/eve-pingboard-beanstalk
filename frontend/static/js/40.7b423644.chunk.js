@@ -1,2 +1,0 @@
-(this["webpackJsonp@ping-board/frontend"]=this["webpackJsonp@ping-board/frontend"]||[]).push([[40],{200:function(e,n,r){e.exports=function(){"use strict";return{name:"en",weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_")}}()}}]);
-//# sourceMappingURL=40.7b423644.chunk.js.map

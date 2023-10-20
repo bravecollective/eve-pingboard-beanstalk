@@ -1,34 +1,18 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.InMemorySessionProvider = void 0;
-const uuid = __importStar(require("uuid"));
+const node_crypto_1 = __importDefault(require("node:crypto"));
 const create_interval_scheduler_1 = require("./create-interval-scheduler");
 class InMemorySessionProvider {
     constructor() {
         this.sessionStore = new Map();
-        this.cleanupScheduler = create_interval_scheduler_1.createIntervalScheduler(() => this.cleanup());
+        this.cleanupScheduler = (0, create_interval_scheduler_1.createIntervalScheduler)(() => this.cleanup());
     }
     async createSession(data) {
-        const id = uuid.v4();
+        const id = node_crypto_1.default.randomUUID();
         const session = { id, ...data };
         this.sessionStore.set(id, session);
         return session;

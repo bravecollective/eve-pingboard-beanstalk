@@ -1,5 +1,5 @@
 import { UserRoles } from '../user-roles';
-export declare type ApiMeResponse = {
+export type ApiMeResponse = {
     isLoggedIn: false;
 } | {
     isLoggedIn: true;

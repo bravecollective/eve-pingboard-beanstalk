@@ -8,7 +8,7 @@ const knex_1 = __importDefault(require("knex"));
 let instance = null;
 async function knexInstance() {
     if (!instance) {
-        instance = knex_1.default({
+        instance = (0, knex_1.default)({
             client: 'mysql2',
             connection: process.env.DB_URL,
             pool: {

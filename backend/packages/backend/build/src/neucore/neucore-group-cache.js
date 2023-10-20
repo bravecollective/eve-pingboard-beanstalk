@@ -18,7 +18,7 @@ const in_memory_ttl_cache_1 = require("../util/in-memory-ttl-cache");
 class NeucoreGroupCache {
     constructor(options) {
         _NeucoreGroupCache_cache.set(this, void 0);
-        const policy = cockatiel_1.retry(cockatiel_1.handleAll, {
+        const policy = (0, cockatiel_1.retry)(cockatiel_1.handleAll, {
             backoff: new cockatiel_1.ExponentialBackoff(),
             maxAttempts: 5,
         });

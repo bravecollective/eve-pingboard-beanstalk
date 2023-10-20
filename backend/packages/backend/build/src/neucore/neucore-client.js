@@ -37,20 +37,21 @@ class NeucoreClient {
     /** Performs a GET request to Neucore */
     async get(path) {
         let response;
+        const url = `${this.baseUrl}${path}`;
         try {
-            response = await node_fetch_1.default(`${this.baseUrl}${path}`, {
+            response = await (0, node_fetch_1.default)(url, {
                 headers: this.authHeaders,
             });
         }
         catch (error) {
-            throw new NeucoreError('Request failed', error);
+            throw new NeucoreError(`Request failed (GET ${url})`, error instanceof Error ? error : new Error(String(error)));
         }
         if (response.status < 400) {
             try {
                 return (await response.json());
             }
             catch (error) {
-                throw new NeucoreResponseError('Failed to parse response', path, response, error);
+                throw new NeucoreResponseError('Failed to parse response', path, response, error instanceof Error ? error : new Error(String(error)));
             }
         }
         throw new NeucoreResponseError(`Received unexpected status code: ${response.status}`, path, response);

@@ -17,17 +17,17 @@ function getApp(options) {
         app.keys = options.cookieSigningKeys;
     }
     const appRouter = new router_1.default();
-    app.use(session_1.getSessionMiddleware({
+    app.use((0, session_1.getSessionMiddleware)({
         app,
         sessionCookieName: 'pingboard-session',
         sessionProvider: options.sessionProvider,
         sessionTimeout: options.sessionTimeout,
         sessionRefreshInterval: options.sessionRefreshInterval,
     }));
-    app.use(user_roles_1.getUserRolesMiddleware(options));
-    app.use(koa_bodyparser_1.default({ enableTypes: ['json'] }));
-    const apiRouter = api_1.getRouter(options);
-    const authRouter = auth_1.getRouter(options);
+    app.use((0, user_roles_1.getUserRolesMiddleware)(options));
+    app.use((0, koa_bodyparser_1.default)({ enableTypes: ['json'] }));
+    const apiRouter = (0, api_1.getRouter)(options);
+    const authRouter = (0, auth_1.getRouter)(options);
     appRouter.use('/api', apiRouter.routes(), apiRouter.allowedMethods());
     appRouter.use('/auth', authRouter.routes(), authRouter.allowedMethods());
     app.use(appRouter.routes()).use(appRouter.allowedMethods());
