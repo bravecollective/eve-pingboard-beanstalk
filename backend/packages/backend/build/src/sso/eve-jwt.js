@@ -36,7 +36,7 @@ function parseEveJWT(token, clientId) {
         typeof parsed.owner !== 'string' ||
         typeof parsed.exp !== 'number' ||
         parsed.azp !== clientId ||
-        parsed.iss !== 'login.eveonline.com') {
+        parsed.iss !== 'https://login.eveonline.com') {
         throw new Error('invalid Eve JWT');
     }
     const scopes = 'scp' in parsed
