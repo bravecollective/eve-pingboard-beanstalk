@@ -21,8 +21,8 @@ class EveSSOClient {
             clientId: options.clientId,
             clientSecret: options.clientSecret,
             redirectUri: options.redirectUri,
-            accessTokenUri: 'https://login.eveonline.com/v2/oauth/token',
-            authorizationUri: 'https://login.eveonline.com/v2/oauth/authorize/',
+            accessTokenUri: options.accessTokenUri,
+            authorizationUri: options.authorizationUri,
         });
         this.stateTimeout = options.stateTimeout ?? 300;
         this.cleanupScheduler = (0, create_interval_scheduler_1.createIntervalScheduler)(() => this.cleanupStates());

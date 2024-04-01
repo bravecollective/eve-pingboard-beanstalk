@@ -13,6 +13,8 @@ async function main() {
         clientId: getFromEnv('SSO_CLIENT_ID'),
         clientSecret: getFromEnv('SSO_CLIENT_SECRET'),
         redirectUri: getFromEnv('SSO_REDIRECT_URI'),
+        accessTokenUri: getFromEnv('SSO_TOKEN_URI'),
+        authorizationUri: getFromEnv('SSO_AUTHORIZATION_URI'),
     });
     eveSsoClient.startAutoCleanup();
     const neucoreClient = new neucore_1.NeucoreClient({
