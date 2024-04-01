@@ -2,7 +2,7 @@
 Deploys https://github.com/cmd-johnson/eve-pingboard/releases
 
 - `eb init`
-  - choose Node.js 16
+  - choose Node.js 18
 - `eb create --single -i t3a.nano`
 - Add env vars:
     ```
@@ -11,6 +11,8 @@ Deploys https://github.com/cmd-johnson/eve-pingboard/releases
     SSO_CLIENT_ID="111"
     SSO_CLIENT_SECRET="aaa"
     SSO_REDIRECT_URI="https://events.bravecollective.com/auth/callback"
+    SSO_TOKEN_URI="https://login.eveonline.com/v2/oauth/token"
+    SSO_AUTHORIZATION_URI="https://login.eveonline.com/v2/oauth/authorize/" 
     SLACK_TOKEN="xoxb-111"
     CORE_URL="https://account.bravecollective.com/api"
     CORE_APP_ID="1"
