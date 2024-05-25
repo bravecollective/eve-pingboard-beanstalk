@@ -16,7 +16,7 @@ class SlackRequestFailedError extends Error {
 }
 exports.SlackRequestFailedError = SlackRequestFailedError;
 class SlackClient {
-    constructor(token) {
+    constructor(token, apiBaseUrl) {
         this.channelCache = new in_memory_ttl_cache_1.InMemoryTTLCache({
             defaultTTL: 30 * 60 * 1000,
             get: async () => {
@@ -59,6 +59,7 @@ class SlackClient {
         });
         this.client = new web_api_1.WebClient(token, {
             logLevel: web_api_1.LogLevel.DEBUG,
+            slackApiUrl: apiBaseUrl,
         });
     }
     async getChannels() {

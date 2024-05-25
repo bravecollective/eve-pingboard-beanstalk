@@ -26,7 +26,7 @@ async function main() {
         neucoreClient,
         cacheTTL: getNumberFromEnv('CORE_GROUP_REFRESH_INTERVAL', 60) * 1000,
     });
-    const slackClient = new slack_client_1.SlackClient(getFromEnv('SLACK_TOKEN'));
+    const slackClient = new slack_client_1.SlackClient(getFromEnv('SLACK_TOKEN'), getOptionalFromEnv('SLACK_API_BASE_URL'));
     const sessionTimeout = getNumberFromEnv('SESSION_TIMEOUT', 7 * 24 * 60 * 60) * 1000;
     const sessionRefreshInterval = getNumberFromEnv('SESSION_REFRESH_INTERVAL', 60) * 1000;
     const sessionProvider = new in_memory_session_provider_1.InMemorySessionProvider();
